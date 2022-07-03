@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from 'prop-types'
 import { padLeft, genRangeList } from '../utility'
 class MonthPicker extends React.Component {
     constructor(props) {
@@ -35,7 +34,7 @@ class MonthPicker extends React.Component {
         onDateChange(this.state.yearSelect, monthNum)
     }
     render() {
-        const { year, month } = this.props
+        const { year } = this.props
         const { isOpen, yearSelect, monthSelect } = this.state
         const monthRange = genRangeList(1, 12)
         const yearRange = genRangeList(-4, 9).map(num => num + year)
