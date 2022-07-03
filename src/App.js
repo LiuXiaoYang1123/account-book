@@ -3,6 +3,7 @@ import PriceList from './components/PriceList';
 import TabView from './components/TabView';
 import { LIST_VIEW, CHART_VIEW } from './utility'
 import TotalPrice from './components/TotalPrice';
+import MonthPicker from './components/MonthPicker';
 const items = [
   {
     "id": 1,
@@ -39,6 +40,9 @@ function App() {
           income={100}
           outcome={200}></TotalPrice>
       </header>
+      <MonthPicker
+        onDateChange={(year, month) => { console.log(year, month) }}
+      ></MonthPicker>
       <TabView
         onTabChange={(name) => console.log(name)}
       >
