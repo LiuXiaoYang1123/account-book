@@ -1,9 +1,17 @@
 import React from "react";
 import PropTypes from 'prop-types'
 const TotalPrice = ({ income, outcome }) =>
-    <div>
-        <span className="col-6" color={'#fff'}>income:{income}</span>
-        <span className="col-6" color={'#fff'}>income:{outcome}</span>
+    <div className="row">
+        <div className="col">
+            <h5 className="income">收入:
+                <span>{income}</span>
+            </h5>
+        </div>
+        <div className="col">
+            <h5 className="outcome">收入:
+                <span>{outcome}</span>
+            </h5>
+        </div>
     </div>
 
 TotalPrice.propTypes = {
