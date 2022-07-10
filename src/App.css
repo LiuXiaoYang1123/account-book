@@ -3,10 +3,22 @@
   min-height: 10vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.main-body {
+  margin: 1vh;
+}
+
+.header-name {
+  align-self: center;
+}
+
+.header-more {
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .App-link {
