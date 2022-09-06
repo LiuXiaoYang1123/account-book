@@ -17,7 +17,7 @@ class PriceForm extends React.Component {
     }
     sumbitForm = (event) => {
 
-        const { item, onFormSubmit } = this.props
+        const { item, onFormSubmit, onSelectCategory } = this.props
         const editMode = !!item.id
         const price = this.priceInput.value.trim() * 1
         const date = this.dateInput.value.trim()
@@ -33,7 +33,13 @@ class PriceForm extends React.Component {
                     validatePass: false,
                     errorMessage: '请填写正确的日期格式'
                 })
-            } else {
+            } else if (!onSelectCategory) {
+                this.setState({
+                    validatePass: false,
+                    errorMessage: '请选择分类'
+                })
+            }
+            else {
                 this.setState({
                     validatePass: true,
                     errorMessage: ''

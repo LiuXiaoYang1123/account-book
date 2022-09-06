@@ -7,20 +7,43 @@ import { INCOME, OUTCOME } from "../utility"
 import { Tabs, Tab } from "../components/Tabs";
 import { testCategories } from "../testData"
 import withContext from '../withContext';
+import withRouter from '../withRouter';
+
+const tabsText = [OUTCOME, INCOME]
 const Create = (props) => {
-    const [selectedTab, onSelectTab] = useState(OUTCOME)
-    const [selectedCategory, onSelectedCategory] = useState(null)
-    const [validationPassed, onValidationPassed] = useState(true)
     const { id } = useParams()
+    const { items, categories } = props.data
+    const editItem = (id && items[id]) ? items[id] : {}
+    const [selectedTab, onSelectTab] = useState((id && items[id]) ? categories[items[id].cid].type : OUTCOME)
+    const [selectedCategory, onSelectedCategory] = useState((id && items[id]) ? categories[items[id].cid] : null)
+    const [validationPassed, onValidationPassed] = useState(true)
     const selectCategory = (category) => {
         onSelectedCategory(category)
     }
-    const filterCategories = testCategories.filter(category => category.type === INCOME)
-    const { data } = props
-    console.log(data)
+    const tabChange = (index) => {
+        onSelectTab(tabsText[index])
+    }
+    const filterCategories = Object.keys(categories)
+        .filter(id => categories[id].type === selectedTab)
+        .map(id => categories[id])
+    const cancelSubmit = () => {
+        props.router.navigate('/')
+    }
+    const submitForm = (data, isEditMode) => {
+        if (!isEditMode) {
+            // create
+            props.actions.createItem(data, selectedCategory.id)
+        } else {
+            // update
+            props.actions.updateItem(data, selectedCategory.id)
+        }
+        props.router.navigate('/')
+    }
+
+    const tabIndex = tabsText.findIndex(text => text === selectedTab)
     return (
         <div className="create-page main-body py-3 px-3 rounded mt-3" style={{ background: '#fff' }}>
-            <Tabs onTabChange={() => { }} activeIndex={0}>
+            <Tabs onTabChange={tabChange} activeIndex={tabIndex}>
                 <Tab>支出</Tab>
                 <Tab>收入</Tab>
             </Tabs>
@@ -28,11 +51,13 @@ const Create = (props) => {
                 onSelectCategory={selectCategory}
                 selectedCategory={selectedCategory} />
             <PriceForm
-                onFormSubmit={() => { }}
-                onCancelSubmit={() => { }}
+                onFormSubmit={submitForm}
+                onCancelSubmit={cancelSubmit}
+                onSelectCategory={selectedCategory}
+                item={editItem}
             />
         </div>
     )
 }
 
-export default withContext(Create)
+export default withRouter(withContext(Create))
