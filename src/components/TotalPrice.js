@@ -8,7 +8,7 @@ const TotalPrice = ({ income, outcome }) =>
             </h5>
         </div>
         <div className="col">
-            <h5 className="outcome">收入:
+            <h5 className="outcome">支出:
                 <span>{outcome}</span>
             </h5>
         </div>

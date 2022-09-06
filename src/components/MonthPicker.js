@@ -28,7 +28,7 @@ class MonthPicker extends React.Component {
         })
     }
     changeSelectClass = (cur, tar) => {
-        return (cur === tar ? 'dropdown-item active' : 'dropdown-item')
+        return (cur === tar ? "dropdown-item active text-white" : "dropdown-item")
     }
     selectYear = (event, yearNum) => {
         event.preventDefault();
@@ -61,20 +61,20 @@ class MonthPicker extends React.Component {
                     isOpen &&
                     <div className="dropdown-menu" style={{ display: 'block' }}>
                         <div className="row">
-                            <div className="col border-right">
+                            <div className="col border-right years-range">
                                 {yearRange.map((yearNum, index) =>
                                     <a key={index}
                                         className={this.changeSelectClass(yearNum, yearSelect)}
                                         onClick={event => this.selectYear(event, yearNum)}
-                                        href='#'>{yearNum}年</a>
+                                        href='#'>{yearNum} 年</a>
                                 )}
                             </div>
-                            <div className="col">
+                            <div className="col months-range">
                                 {monthRange.map((monthNum, index) =>
                                     <a key={index}
                                         className={this.changeSelectClass(monthNum, monthSelect)}
                                         onClick={event => this.selectMonth(event, monthNum)}
-                                        href='#'>{padLeft(monthNum)}月</a>
+                                        href='#'>{padLeft(monthNum)} 月</a>
                                 )}
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import '../App.css';
 import PriceList from '../components/PriceList';
 import TabView from '../components/TabView';
-import { LIST_VIEW, CHART_VIEW, INCOME, OUTCOME, parseToYearAndMonth } from '../utility'
+import { LIST_VIEW, CHART_VIEW, INCOME, OUTCOME, parseToYearAndMonth, padLeft } from '../utility'
 import TotalPrice from '../components/TotalPrice';
 import MonthPicker from '../components/MonthPicker';
 import CreateBtn from '../components/CreateBtn';
@@ -32,7 +32,7 @@ export const items = [
         "id": 2,
         "title": "和炮炮会晤",
         "price": 200,
-        "date": "2022-07-03",
+        "date": "2022-09-03",
         "cid": 2
 
     }
@@ -49,7 +49,7 @@ class Home extends React.Component {
         super(props)
         this.state = {
             items,
-            currentDate: parseToYearAndMonth(),
+            currentDate: parseToYearAndMonth('2022/09/05'),
             tabView: LIST_VIEW
         }
     }
@@ -60,6 +60,12 @@ class Home extends React.Component {
         })
     }
     changeDate = (year, month) => {
+        const changedDate = {}
+        changedDate.year = year
+        changedDate.month = month
+        this.setState({
+            currentDate: changedDate
+        })
     }
     modifyItem = (modifiedItem) => {
         const modifiedItems = this.state.items.map(item => {
@@ -87,9 +93,11 @@ class Home extends React.Component {
         const itemsWithCategory = items.map(item => {
             item.category = categories[item.cid]
             return item
+        }).filter(item => {
+            return item.date.includes(`${currentDate.year}-${padLeft(currentDate.month)}`)
         })
         let totalIncome = 0, totalOutcome = 0
-        items.forEach((item) => {
+        itemsWithCategory.forEach((item) => {
             if (item.category.type === INCOME) totalIncome += item.price;
             else totalOutcome += item.price;
         })
