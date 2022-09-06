@@ -30,6 +30,7 @@ const CategorySelect = (props) => {
                                     color={iconColor}
                                     icon={category.iconName}
                                 />
+                                <p>{category.name}</p>
                             </div>
                         )
                     })

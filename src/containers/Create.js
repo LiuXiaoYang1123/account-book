@@ -3,27 +3,11 @@ import { useParams } from "react-router-dom";
 import { useState } from "react";
 import CategorySelect from "../components/CategorySelect"
 import PriceForm from "../components/PriceForm";
-import { OUTCOME } from "../utility"
-export const categories = [
-    {
-        "id": 1,
-        "name": "实习",
-        "type": "income",
-        "iconName": "logo-yen"
-    },
-    {
-        "id": 2,
-        "name": "旅行",
-        "type": "outcome",
-        "iconName": "ios-plane"
-    }
-]
-let props_with_category = {
-    categories,
-    onSelectCategory: () => { },
-    selectedCategory: categories[0],
-}
-const Create = () => {
+import { INCOME, OUTCOME } from "../utility"
+import { Tabs, Tab } from "../components/Tabs";
+import { testCategories } from "../testData"
+import withContext from '../withContext';
+const Create = (props) => {
     const [selectedTab, onSelectTab] = useState(OUTCOME)
     const [selectedCategory, onSelectedCategory] = useState(null)
     const [validationPassed, onValidationPassed] = useState(true)
@@ -31,15 +15,24 @@ const Create = () => {
     const selectCategory = (category) => {
         onSelectedCategory(category)
     }
+    const filterCategories = testCategories.filter(category => category.type === INCOME)
+    const { data } = props
+    console.log(data)
     return (
-        <h1>
-            This is the create page {id}
-            <CategorySelect categories={categories}
+        <div className="create-page main-body py-3 px-3 rounded mt-3" style={{ background: '#fff' }}>
+            <Tabs onTabChange={() => { }} activeIndex={0}>
+                <Tab>支出</Tab>
+                <Tab>收入</Tab>
+            </Tabs>
+            <CategorySelect categories={filterCategories}
                 onSelectCategory={selectCategory}
                 selectedCategory={selectedCategory} />
-            <PriceForm />
-        </h1>
+            <PriceForm
+                onFormSubmit={() => { }}
+                onCancelSubmit={() => { }}
+            />
+        </div>
     )
 }
 
-export default Create
+export default withContext(Create)

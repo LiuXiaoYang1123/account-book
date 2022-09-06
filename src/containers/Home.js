@@ -1,11 +1,15 @@
+import React from 'react';
 import '../App.css';
+import Ionicon from 'react-ionicons'
 import PriceList from '../components/PriceList';
 import TabView from '../components/TabView';
 import { LIST_VIEW, CHART_VIEW, INCOME, OUTCOME, parseToYearAndMonth, padLeft } from '../utility'
 import TotalPrice from '../components/TotalPrice';
 import MonthPicker from '../components/MonthPicker';
 import CreateBtn from '../components/CreateBtn';
-import React from 'react';
+import { Tabs, Tab } from '../components/Tabs';
+import withContext from '../withContext';
+
 export const categories = {
     "1": {
         "id": 1,
@@ -44,19 +48,20 @@ const newItem = {
     "date": "2022-07-03",
     "cid": 2
 }
+const tabsText = [LIST_VIEW, CHART_VIEW]
 class Home extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             items,
             currentDate: parseToYearAndMonth('2022/09/05'),
-            tabView: LIST_VIEW
+            tabView: tabsText[0]
         }
     }
 
     changeView = (view) => {
         this.setState({
-            tabView: view
+            tabView: tabsText[view]
         })
     }
     changeDate = (year, month) => {
@@ -80,7 +85,6 @@ class Home extends React.Component {
         this.setState({
             items: [newItem, ...this.state.items]
         })
-        console.log(1)
     }
     deleteItem = (selectedItem) => {
         const filteredItems = this.state.items.filter(item => item.id !== selectedItem.id)
@@ -90,12 +94,14 @@ class Home extends React.Component {
     }
     render() {
         const { items, currentDate, tabView } = this.state
+        const { data } = this.props
         const itemsWithCategory = items.map(item => {
             item.category = categories[item.cid]
             return item
         }).filter(item => {
             return item.date.includes(`${currentDate.year}-${padLeft(currentDate.month)}`)
         })
+
         let totalIncome = 0, totalOutcome = 0
         itemsWithCategory.forEach((item) => {
             if (item.category.type === INCOME) totalIncome += item.price;
@@ -121,10 +127,26 @@ class Home extends React.Component {
                     </div>
                 </header>
                 <div className='main-body'>
-                    <TabView
-                        onTabChange={this.changeView}
-                    >
-                    </TabView>
+                    <Tabs activeIndex={0} onTabChange={this.changeView}>
+                        <Tab>
+                            <Ionicon
+                                className="rounded-circle mr-2"
+                                font-size="25px"
+                                color={'#007bff'}
+                                icon='ios-paper'
+                            ></Ionicon>
+                            列表模式
+                        </Tab>
+                        <Tab>
+                            <Ionicon
+                                className="rounded-circle mr-2"
+                                font-size="25px"
+                                color={'#007bff'}
+                                icon='ios-pie'
+                            ></Ionicon>
+                            图表模式
+                        </Tab>
+                    </Tabs>
                     <CreateBtn
                         onCreateBtn={this.createItem} />
                     {tabView === LIST_VIEW &&
@@ -138,13 +160,9 @@ class Home extends React.Component {
                         <h1>图表</h1>
                     }
                 </div>
-
-
             </div>
         )
-
     }
-
-
 }
-export default Home
+
+export default withContext(Home)
