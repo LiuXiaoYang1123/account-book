@@ -9,6 +9,7 @@ import CreateBtn from '../components/CreateBtn';
 import { Tabs, Tab } from '../components/Tabs';
 import withContext from '../withContext';
 import withRouter from '../withRouter';
+import Loader from '../components/Loader';
 const newItem = {
     "id": 3,
     "title": "吃饭饭",
@@ -22,24 +23,19 @@ class Home extends React.Component {
         super(props)
         this.state = {
             items: this.props.data.items,
-            currentDate: parseToYearAndMonth('2022/09/05'),
             tabView: tabsText[0]
         }
-        console.log('home item', this.state.items)
     }
-
+    componentDidMount() {
+        this.props.actions.getInitialData()
+    }
     changeView = (view) => {
         this.setState({
             tabView: tabsText[view]
         })
     }
     changeDate = (year, month) => {
-        const changedDate = {}
-        changedDate.year = year
-        changedDate.month = month
-        this.setState({
-            currentDate: changedDate
-        })
+        this.props.actions.selectNewMonth(year, month)
     }
     modifyItem = (modifiedItem) => {
         this.props.router.navigate(`/edit/${modifiedItem.id}`)
@@ -51,13 +47,11 @@ class Home extends React.Component {
         this.props.actions.deleteItem(selectedItem)
     }
     render() {
-        const { items, currentDate, tabView } = this.state
-        const { categories } = this.props.data
+        const { tabView } = this.state
+        const { categories, items, currentDate, isLoading } = this.props.data
         const itemsWithCategory = Object.keys(items).map(id => {
             items[id].category = categories[items[id].cid]
             return items[id]
-        }).filter(item => {
-            return item.date.includes(`${currentDate.year}-${padLeft(currentDate.month)}`)
         })
         let totalIncome = 0, totalOutcome = 0
         itemsWithCategory.forEach((item) => {
@@ -84,38 +78,44 @@ class Home extends React.Component {
                     </div>
                 </header>
                 <div className='main-body'>
-                    <Tabs activeIndex={0} onTabChange={this.changeView}>
-                        <Tab>
-                            <Ionicon
-                                className="rounded-circle mr-2"
-                                font-size="25px"
-                                color={'#007bff'}
-                                icon='ios-paper'
-                            ></Ionicon>
-                            列表模式
-                        </Tab>
-                        <Tab>
-                            <Ionicon
-                                className="rounded-circle mr-2"
-                                font-size="25px"
-                                color={'#007bff'}
-                                icon='ios-pie'
-                            ></Ionicon>
-                            图表模式
-                        </Tab>
-                    </Tabs>
-                    <CreateBtn
-                        onCreateBtn={this.createItem} />
-                    {tabView === LIST_VIEW &&
-                        <PriceList
-                            items={itemsWithCategory}
-                            onModifyItem={this.modifyItem}
-                            onDeleteItem={this.deleteItem}>
-                        </PriceList>
+                    {isLoading && <Loader />}
+                    {!isLoading &&
+                        <>
+                            <Tabs activeIndex={0} onTabChange={this.changeView}>
+                                <Tab>
+                                    <Ionicon
+                                        className="rounded-circle mr-2"
+                                        font-size="25px"
+                                        color={'#007bff'}
+                                        icon='ios-paper'
+                                    ></Ionicon>
+                                    列表模式
+                                </Tab>
+                                <Tab>
+                                    <Ionicon
+                                        className="rounded-circle mr-2"
+                                        font-size="25px"
+                                        color={'#007bff'}
+                                        icon='ios-pie'
+                                    ></Ionicon>
+                                    图表模式
+                                </Tab>
+                            </Tabs>
+                            <CreateBtn
+                                onCreateBtn={this.createItem} />
+                            {tabView === LIST_VIEW &&
+                                <PriceList
+                                    items={itemsWithCategory}
+                                    onModifyItem={this.modifyItem}
+                                    onDeleteItem={this.deleteItem}>
+                                </PriceList>
+                            }
+                            {tabView === CHART_VIEW &&
+                                <h1>图表</h1>
+                            }
+                        </>
                     }
-                    {tabView === CHART_VIEW &&
-                        <h1>图表</h1>
-                    }
+
                 </div>
             </div>
         )
